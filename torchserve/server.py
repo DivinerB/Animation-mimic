@@ -147,5 +147,5 @@ def pose():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def main():
+def run():
     app.run(debug=True)

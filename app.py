@@ -11,6 +11,7 @@ import json
 import pathlib
 import shutil
 import subprocess
+from torchserve import server
 
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
@@ -27,8 +28,10 @@ if output_dir.exists():
 os.makedirs(output_dir)
 if json_dir.exists():
     shutil.rmtree("output_json")
-    
-os.system(rf'bin\OpenPoseDemo.exe --video {video_file} --write_json output_json/')
+
+server.run()
+
+# os.system(rf'bin\OpenPoseDemo.exe --video {video_file} --write_json output_json/')
 
 # exe_path = os.path.join('bin', 'OpenPoseDemo.exe')
 
