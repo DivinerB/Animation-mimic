@@ -1,0 +1,13 @@
+dist
+build
+*.spec
+*.h5
+*.rar
+models
+bin
+*.pth
+input
+output
+output_json
+*.bvh
+config
