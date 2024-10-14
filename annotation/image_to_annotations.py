@@ -47,13 +47,13 @@ def image_to_annotations(img_fn: str, out_dir: str) -> None:
 
     # convert to bytes and send to torchserve
     img_b = cv2.imencode('.png', img)[1].tobytes()
-    request_data = {'data': img_b}
-    resp = requests.post("http://localhost:8080/predictions/drawn_humanoid_detector", files=request_data, verify=False)
+    request_data = {'image': img_b}
+    resp = requests.post("http://localhost:5000/detect", files=request_data, verify=False)
     if resp is None or resp.status_code >= 300:
         raise Exception(f"Failed to get bounding box, please check if the 'docker_torchserve' is running and healthy, resp: {resp}")
 
     detection_results = json.loads(resp.content)
-
+    print("detection_result ==> ", detection_results)
     # error check detection_results
     if isinstance(detection_results, dict) and 'code' in detection_results.keys() and detection_results['code'] == 404:
         assert False, f'Error performing detection. Check that drawn_humanoid_detector.mar was properly downloaded. Response: {detection_results}'
@@ -91,13 +91,13 @@ def image_to_annotations(img_fn: str, out_dir: str) -> None:
     mask = segment(cropped)
 
     # send cropped image to pose estimator
-    data_file = {'data': cv2.imencode('.png', cropped)[1].tobytes()}
-    resp = requests.post("http://localhost:8080/predictions/drawn_humanoid_pose_estimator", files=data_file, verify=False)
+    data_file = {'image': cv2.imencode('.png', cropped)[1].tobytes()}
+    resp = requests.post("http://localhost:5000/pose", files=data_file, verify=False)
     if resp is None or resp.status_code >= 300:
         raise Exception(f"Failed to get skeletons, please check if the 'docker_torchserve' is running and healthy, resp: {resp}")
 
     pose_results = json.loads(resp.content)
-
+    print("pose_result ==> ", pose_results)
     # error check pose_results
     if isinstance(pose_results, dict) and 'code' in pose_results.keys() and pose_results['code'] == 404:
         assert False, f'Error performing pose estimation. Check that drawn_humanoid_pose_estimator.mar was properly downloaded. Response: {pose_results}'
