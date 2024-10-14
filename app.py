@@ -6,21 +6,27 @@ import cv2
 import numpy as np
 import os
 from pathlib import Path
-from IPython.display import HTML
 import json
 import pathlib
 import shutil
 import subprocess
 from torchserve import server
+from annotation import annotation
 
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
-input_dir = Path(f'input')
+video_dir = Path(f'input_video')
 json_dir = Path(f'output_json')
-for file in os.listdir(input_dir):
-    video_file = os.path.join(input_dir, file)
+for file in os.listdir(video_dir):
+    video_file = os.path.join(video_dir, file)
     print(video_file)
+image_dir = Path(f'input_image')
+for file in os.listdir(image_dir):
+    image_file = os.path.join(image_dir, file)
+    print(image_dir)
+
+annotation_dir = Path(f'character')
 
 output_dir = Path(f'output')
 if output_dir.exists():
@@ -30,6 +36,7 @@ if json_dir.exists():
     shutil.rmtree("output_json")
 
 server.run()
+annotation.run(image_dir, annotation_dir)
 
 # os.system(rf'bin\OpenPoseDemo.exe --video {video_file} --write_json output_json/')
 

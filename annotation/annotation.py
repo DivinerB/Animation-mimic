@@ -5,6 +5,6 @@
 from image_to_annotations import image_to_annotations
 
 
-def image2animation(img_fn, char_anno_dir):
+def run(img_fn, char_anno_dir):
 
     image_to_annotations(img_fn, char_anno_dir)
